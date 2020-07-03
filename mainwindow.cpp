@@ -26,12 +26,11 @@ MainWindow::MainWindow(QWidget *parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-    this->setWindowTitle(tr("Image to bitmap converter"));
+    this->setWindowTitle(tr("Image to bitmap converter v1.0"));
     this->ui->horizontalSliderThreshold->setMinimum(0);
     this->ui->horizontalSliderThreshold->setMaximum(255);
     this->ui->horizontalSliderThreshold->setValue(127);
-    image = imread("../ImageConverter/SplashScreen.png", CV_LOAD_IMAGE_COLOR);
-    imageToDisplay = QImage((const uint8_t*)image.data, image.cols, image.rows, image.step, QImage::Format_BGR888);
+    imageToDisplay = QImage("SplashScreen.png");
 
     reverse_bytes = false;
     enable_threshold = false;
@@ -61,6 +60,15 @@ void MainWindow::on_pushButtonOpenFile_clicked()
 
 void MainWindow::on_pushButtonExport_clicked()
 {
+    if(image.empty())
+    {
+        MessageWindow message;
+        message.setModal(true);
+        message.setText(tr("Please open image file first"));
+        message.exec();
+
+        return;
+    }
     // Read array name
     QString array_name = ui->plainTextEditArrayName->toPlainText();
 
@@ -128,6 +136,10 @@ void MainWindow::on_checkBoxThreshold_stateChanged()
 {
     enable_threshold = !enable_threshold;
     //qDebug() << "enable threshold = " << enable_threshold << endl;
+    if(image.empty())
+    {
+        return;
+    }
     if(enable_threshold)
     {
         cvtColor(image, bw_image, cv::COLOR_BGR2GRAY);
