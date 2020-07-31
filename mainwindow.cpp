@@ -30,7 +30,7 @@ MainWindow::MainWindow(QWidget *parent)
     this->ui->horizontalSliderThreshold->setMinimum(0);
     this->ui->horizontalSliderThreshold->setMaximum(255);
     this->ui->horizontalSliderThreshold->setValue(127);
-    imageToDisplay = QImage("SplashScreen.png");
+    imageToDisplay = QImage(":/SplashScreen.png");
 
     reverse_bytes = false;
     enable_threshold = false;
