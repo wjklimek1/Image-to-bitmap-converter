@@ -45,6 +45,13 @@
        </widget>
       </item>
       <item>
+       <widget class="QCheckBox" name="checkBox8bitGrayscale">
+        <property name="text">
+         <string>export 8bit grayscale</string>
+        </property>
+       </widget>
+      </item>
+      <item>
        <widget class="QPushButton" name="pushButtonOpenFile">
         <property name="text">
          <string>Open file</string>

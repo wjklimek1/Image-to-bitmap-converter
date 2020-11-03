@@ -34,6 +34,7 @@ MainWindow::MainWindow(QWidget *parent)
 
     reverse_bytes = false;
     enable_threshold = false;
+    grayscale_8bit = false;
 }
 
 MainWindow::~MainWindow()
@@ -53,7 +54,7 @@ void MainWindow::on_pushButtonOpenFile_clicked()
     if(filename.isEmpty())
         return;
 
-    image = imread(filename.toUtf8().constData(), CV_LOAD_IMAGE_COLOR);
+    image = imread(filename.toUtf8().constData(), IMREAD_COLOR);
     imageToDisplay = QImage((const uint8_t*)image.data, image.cols, image.rows, image.step, QImage::Format_BGR888);
     this->repaint();
 }
@@ -111,17 +112,18 @@ void MainWindow::on_pushButtonExport_clicked()
     // Open file and write data
     ofstream outputFile;
     outputFile.open(filename.toUtf8().constData());
-    if(enable_threshold == false && reverse_bytes == true)
+    if(enable_threshold == false && reverse_bytes == true && grayscale_8bit == false)
         write_header_file_reversed(outputFile, image, array_name.toUtf8().constData());
-    else if(enable_threshold == false && reverse_bytes == false)
+    else if(enable_threshold == false && reverse_bytes == false && grayscale_8bit == false)
         write_header_file_normal(outputFile, image, array_name.toUtf8().constData());
-    else if(enable_threshold == false && reverse_bytes == false)
+    else if(enable_threshold == false && reverse_bytes == false && grayscale_8bit == false)
         write_header_file_normal(outputFile, image, array_name.toUtf8().constData());
-    else if(enable_threshold == true && reverse_bytes == true)
+    else if(enable_threshold == true && reverse_bytes == true && grayscale_8bit == false)
         write_header_file_normal(outputFile, bin_image, array_name.toUtf8().constData());
-    else if(enable_threshold == true && reverse_bytes == false)
+    else if(enable_threshold == true && reverse_bytes == false && grayscale_8bit == false)
         write_header_file_normal(outputFile, bin_image, array_name.toUtf8().constData());
-
+    else if(enable_threshold == false && reverse_bytes == false && grayscale_8bit == true)
+        write_header_file_8bit_grayscale(outputFile, image, array_name.toUtf8().constData());
 
     outputFile.close();
 }
@@ -130,6 +132,12 @@ void MainWindow::on_checkBoxReverseBytes_stateChanged()
 {
     reverse_bytes = !reverse_bytes;
     //qDebug() << "reverse bytes = " << reverse_bytes << endl;
+}
+
+void MainWindow::on_checkBox8bitGrayscale_stateChanged()
+{
+    grayscale_8bit = !grayscale_8bit;
+    //qDebug() << "grayscale_8bit = " << grayscale_8bit << endl;
 }
 
 void MainWindow::on_checkBoxThreshold_stateChanged()

@@ -28,6 +28,7 @@ private slots:
     void on_pushButtonOpenFile_clicked();
     void on_checkBoxReverseBytes_stateChanged();
     void on_checkBoxThreshold_stateChanged();
+    void on_checkBox8bitGrayscale_stateChanged();
     void on_horizontalSliderThreshold_valueChanged();
 
 private:
@@ -42,5 +43,6 @@ private:
 
     bool reverse_bytes;
     bool enable_threshold;
+    bool grayscale_8bit;
 };
 #endif // MAINWINDOW_H

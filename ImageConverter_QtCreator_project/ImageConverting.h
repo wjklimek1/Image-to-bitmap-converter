@@ -30,7 +30,14 @@ uint16_t color_24bit_to_16bit(uint8_t R, uint8_t G, uint8_t B)
     color = (color << 5) | B_bits;
 
     return color;
+}
 
+uint8_t color_24bit_to_8bit_grayscale(uint8_t R, uint8_t G, uint8_t B)
+{
+    uint16_t sum = R+G+B;
+    uint8_t color = sum/3;
+
+    return color;
 }
 
 uint16_t byte_reverse(uint16_t in_color)
@@ -109,5 +116,39 @@ bool write_header_file_normal(ofstream &outputFile, Mat image, string image_name
     return 1;
 }
 
+bool write_header_file_8bit_grayscale(ofstream &outputFile, Mat image, string image_name)
+{
+    outputFile << "const uint8_t " <<  image_name << "[" << image.rows << "*" << image.cols << "] =  {" << endl;
+
+    for(int row = 0; row < image.rows; row++)
+    {
+        for(int col = 0; col < image.cols; col++)
+        {
+            Point3_<uint8_t>* p = image.ptr<Point3_<uint8_t> >(row,col);
+            outputFile << "0x" << hex << (uint16_t)color_24bit_to_8bit_grayscale(p->z, p->y, p->x) << dec;
+
+            if(image.rows == 1)
+            {
+                if(col != (image.cols-1))
+                    outputFile << ", ";
+            }
+            if(image.cols == 1)
+            {
+                if(row != (image.rows-1))
+                    outputFile << ", ";
+            }
+            else
+            {
+                if(row*col != (image.rows-1)*(image.cols-1))
+                    outputFile << ", ";
+            }
+
+        }
+    outputFile << endl;
+    }
+    outputFile << "};";
+
+    return 1;
+}
 
 #endif // IMAGECONVERTING_H
